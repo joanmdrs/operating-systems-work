@@ -12,16 +12,12 @@
 
 //
 // TODO: Definição dos semáforos (variaveis precisam ser globais)
-// int hashi1;
-// int hashi2;
-// int hashi3;
-// int hashi4;
-// int hashi5;
+int *hashi;
 int saleiro;
 //
 
 // lista quem esta de posse de um chopstick
-int *chopstick_use;
+// int *chopstick_use;
 
 // numero de filosofos
 int N_FILOS;
@@ -54,13 +50,16 @@ int main(int argc, char ** argv)
     tids = malloc(N_FILOS * sizeof(pthread_t));
 
     // gerando uma lista de uso dos chopsticks
-    chopstick_use = malloc(N_FILOS * sizeof(int));
+    hashi = malloc(N_FILOS * sizeof(int));
+
+    int key = 123
     
     // um chopstick esta livre se estiver -1
-    for (i = 0; i < N_FILOS; i++)
-    {
-        chopstick_use[i] = -1;
+    for (i = 0; i < N_FILOS; i++){
+      hashi[i] = sem_create(key, 1); 
+      key += 1;
     }
+
 
     //
     // TODO: Criação dos semáforos (aqui é quando define seus
@@ -148,24 +147,25 @@ void * filosofo(void * id)
 // filosofo 'i' quer pegar o chopstick definido por 'num'
 void pegar(int i, int num)
 {
-    if (chopstick_use[num] != -1)
-    {
-        printf("===== ALERTA DO FILOSOFO %d =====\n===== CHOPSTICK[%d] EM USO POR %d =====\n",
-                i,num,chopstick_use[num]);
-    }
-    chopstick_use[num] = i;
+    // if (hashi[num] != -1)
+    // {
+    //     printf("===== ALERTA DO FILOSOFO %d =====\n===== CHOPSTICK[%d] EM USO POR %d =====\n",
+    //             i,num,chopstick_use[num]);
+    // }
+    Wait(hashi[num]);
+    hashi[num] = i;
     printf("+ Filosofo %d pegou o chopstick[%d]\n",i,num);
 }
 
 // filosofo 'i' quer liberar o chopstick definido por 'num'
 void liberar(int i, int num)
 {
-    chopstick_use[num] = -1;
-    printf("- Filosofo %d liberou o chopstick[%d]\n",i,num);
+  Signal(hashi[num]);
+  printf("- Filosofo %d liberou o chopstick[%d]\n",i,num);
 }
 
 int gera_rand(int limit)
 {
-    // 0 a (limit -1)
-    return rand()%limit;
+  // 0 a (limit -1)
+  return rand()%limit;
 }
