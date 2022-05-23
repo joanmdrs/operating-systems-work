@@ -7,7 +7,7 @@
 #include <unistd.h>
 #include <time.h>
 #include <pthread.h>
-#include "./dijkstra.h"
+#include "../dijkstra/dijkstra.h"
 
 // quantidade de leitores lendo
 int readcount = 0;
