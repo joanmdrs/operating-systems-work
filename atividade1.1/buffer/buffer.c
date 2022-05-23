@@ -7,7 +7,7 @@
 #include <unistd.h>
 #include <time.h>
 #include <pthread.h>
-#include "dijkstra.h"
+#include "../dijkstra/dijkstra.h"
 
 #define key 1234
 
