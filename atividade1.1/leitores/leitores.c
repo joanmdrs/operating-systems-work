@@ -103,7 +103,7 @@ void * leitor(void * id){
     usleep(gera_rand(1000000));
 
     // convertendo o Id do leitor para int
-    int i = (intptr_t) id;
+    int i = (int) id;
 
     //
     // TODO: precisa fazer o controle de acesso à entrada do leitor
@@ -140,7 +140,7 @@ void * escritor(void * id){
     usleep(gera_rand(1000000));
     
     // convertendo o Id do leitor para int
-     int i = (intptr_t) id;
+     int i = (int) id;
 
     //
     // TODO: precisa controlar o acesso do escritor ao recurso
