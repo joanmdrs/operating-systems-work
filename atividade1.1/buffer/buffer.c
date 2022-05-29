@@ -184,8 +184,8 @@ void * producer(void * id)
     usleep(gera_rand(1000000));
 
     // recebendo od Id do produtor e convertendo para int
-    int i = id;
-    
+    int i = (int) id;
+     
     // valor a ser produzido
     int produto;
 

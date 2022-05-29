@@ -62,7 +62,7 @@ int main(int argc, char ** argv){
     // iniciando as threads dos leitores
     for (i = 0; i < N_LEITORES; i++)
     {
-        pthread_create(&tl[i], NULL, leitor, ( void *)&i);
+        pthread_create(&tl[i], NULL, leitor, ( void *)i);
     }
     
     // gerando uma lista de threads de leitores
@@ -71,7 +71,7 @@ int main(int argc, char ** argv){
     // iniciando as threads dos escritores
     for (i = 0; i < N_ESCRITORES; i++)
     {
-        pthread_create(&te[i], NULL, escritor, ( void *)&i);
+        pthread_create(&te[i], NULL, escritor, ( void *)i);
     }
 
     // aguardando as threads leitoras terminarem
