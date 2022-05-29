@@ -9,8 +9,6 @@
 #include <pthread.h>
 #include "../dijkstra/dijkstra.h"
 
-#define key 1234
-
 // 
 // TODO: Definição dos semáforos (variaveis precisam ser globais)
 
@@ -91,7 +89,7 @@ int main(int argc, char ** argv)
     // iniciando as threads dos produtores
     for (i = 0; i < PROD_NUM; i++)
     {
-        pthread_create(&nprod[i], NULL, producer,( void *)&i);
+        pthread_create(&nprod[i], NULL, producer,( void *)i);
     }
     
     // iniciando as threads dos produtores
@@ -186,7 +184,7 @@ void * producer(void * id)
     usleep(gera_rand(1000000));
 
     // recebendo od Id do produtor e convertendo para int
-    int i = (intptr_t) id;
+    int i = id;
     
     // valor a ser produzido
     int produto;
