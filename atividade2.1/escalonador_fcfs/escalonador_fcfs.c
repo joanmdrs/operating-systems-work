@@ -281,119 +281,42 @@ void escalona (BCP *fila1, BCP *fila2, BCP *bloqueados)
                         // Este valor definir� o que ocorrer� com o processo.
                         tempo_processador = gera_tempo(processo);
 
-                        // Verifica��o se o tempo de processador gerado �
-                        // maior do que o QUANTUM.
+                        // Diminui do tempo restante de processamento
+                        // o tempo de processador que o processo
+                        // conseguiu.
+                        processo->tempo_restante -= tempo_processador;
+                                
+                        // Roda a simula��o da execu��o do processo.
                         //
-                        // O processo necessitar� de um tempo de processamento
-                        // maior do que o permitido, que � o valor do QUANTUM
-                        // (10 segundos).
-                        // 
-                        // Ponto a analisar:
-                        // 1 - Neste caso, o processo usou todo o seu QUANTUM, 
-                        // logo vai para o fim da fila2, perdendo prioridade
-                        // para os processos que est�o na fila1
-                        // 2 - N�o � permitido que o processo passe mais tempo
-                        // executando do que o valor do QUANTUM, logo o
-                        // tempo_processador � substitu�do pelo valor do
-                        // QUANTUM.
-                        if (tempo_processador > QUANTUM)
-                        {
-                                // Reduz do tempo restante do processador
-                                // apenas o valor m�ximo permitido para
-                                // processamento, que � o QUANTUM.
-                                //
-                                // Simula que o processador utilizou todo o
-                                // seu QUANTUM de tempo m�ximo permitido.
-                                processo->tempo_restante -= QUANTUM;
+                        // Modifica��o 5: roda a simula��o mesmo que
+                        // ele v� terminar depois disso.
+                        for (i=0; i < (int) tempo_processador; i++);
 
-                                // Simula��o da execu��o do processo, um "for"
-                                // sem nenhuma a��o.
-                                //
-                                // Modifica��o 3: Executa apenas o tempo
-                                // m�ximo do QUANTUM, n�o mais o tempo
-                                // excedente gerado pelo tempo_processador.
-                                for (i=0; i < (int) QUANTUM; i++);
                                 
-                                // Modifica��o 4: Verifica se a execu��o do
-                                // processo foi suficiente para que sua tarefa
-                                // seja conclu�da.
-                                //
-                                // Caso n�o falte mais nada para fazer, 
-                                // o tempo_restante do processo ser� zerado,
-                                // ou negativo.
-                                if (processo->tempo_restante <= 0)
-                                {
-                                    // Neste caso, a execucao est� terminada,
-                                    // Sendo o processo finalizado e suas
-                                    // estat�sticas individuais exibidas na
-                                    // tela.
-                                    estatisticas(processo, SEMSUMARIO);
-                                    destroi_processo(processo);
-                                }
-                                else // AVISO: este else estava faltando no codigo
-                                {
-                                    // Ponto a analisa:
-                                    // 1 - Neste ponto simula-se a sa�da do processo
-                                    // do estado de executando para apto, mas
-                                    // neste caso, ele perde prioridade quando usa
-                                    // todo o seu QUANTUM, indo para o final da
-                                    // fila2.
-                                    
-                                    // Incrementa a contagem de vezes que o
-                                    // processo entrou na fila2
-                                    processo->num_fila1++;
-                                    
-                                    // Inicia a contagem do tempo de espera do
-                                    // processo em fila
-                                    gettimeofday(&(processo -> inicio), NULL);
-
-                                    // Insere o processo no final da fila2
-                                    fila1=anexa_fila(processo, fila1);
-                                }
-                        }
-                        else
+                        // 1 - Ele finalizou, quando n�o h� mais tempo
+                        // restante de processamento a fazer.
+                        if (processo->tempo_restante <= 0)
                         {       
-                                // Diminui do tempo restante de processamento
-                                // o tempo de processador que o processo
-                                // conseguiu.
-                                processo->tempo_restante -= tempo_processador;
-                                
-                                // Roda a simula��o da execu��o do processo.
-                                //
-                                // Modifica��o 5: roda a simula��o mesmo que
-                                // ele v� terminar depois disso.
-                                for (i=0; i < (int) tempo_processador; i++);
-
-                                // Caso o processo n�o tenha utilizado todo o
-                                // QUANTUM dispon�vel para processamento, �
-                                // simulado que duas poss�veis situa��es
-                                // ocorreu:
-                                
-                                // 1 - Ele finalizou, quando n�o h� mais tempo
-                                // restante de processamento a fazer.
-                                if (processo->tempo_restante <= 0)
-                                {       
-                                    // Neste caso, finaliza o processo
-                                    estatisticas(processo, SEMSUMARIO);
-                                    destroi_processo(processo);
-                                }
+                                // Neste caso, finaliza o processo
+                                estatisticas(processo, SEMSUMARIO);
+                                destroi_processo(processo);
+                        }
                                 // 2 - Ele parou para realizar uma E/S
-                                else
-                                {
-                                    // Adiciona o processo na fila de
-                                    // bloqueados, at� que ocorra uma
-                                    // interrup��o que o retorne para a fila
-                                    // de aptos.
-                                    //
-                                    // Ponto a analisar:
-                                    // 1 - A fila de processos bloqueados
-                                    // segue uma sequencia FIFO, j� que o
-                                    // primeiro processo a entrar nesta fila
-                                    // ser� sempre o primeiro a ser servido,
-                                    // retornando para a fila de aptos.
-                                    processo->num_bloqueado++;
-                                    bloqueados=anexa_fila(processo, bloqueados);
-                                }
+                        else
+                        {
+                                // Adiciona o processo na fila de
+                                // bloqueados, at� que ocorra uma
+                                // interrup��o que o retorne para a fila
+                                // de aptos.
+                                //
+                                // Ponto a analisar:
+                                // 1 - A fila de processos bloqueados
+                                // segue uma sequencia FIFO, j� que o
+                                // primeiro processo a entrar nesta fila
+                                // ser� sempre o primeiro a ser servido,
+                                // retornando para a fila de aptos.
+                                processo->num_bloqueado++;
+                                bloqueados=anexa_fila(processo, bloqueados);
                         }
                 }
 
