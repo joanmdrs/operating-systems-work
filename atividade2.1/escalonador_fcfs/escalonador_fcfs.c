@@ -224,16 +224,14 @@ void escalona (BCP *fila1, BCP *fila2, BCP *bloqueados)
 
         // Executar� o programa enquanto ainda houver processos necessitando
         // ser processador, quando seu tempo_restante for maior que 0
-        while (executa)
-        {
+        while (executa){
                 // Processa os processos da fila1.
                 //
                 // Pontos a analisar:
                 //
                 // 1 - Executar� enquanto houver processos nesta fila;
                 // 2 - Sempre executar� os processos da fila1 antes da fila2, dando prioridade � fila1.
-                while (fila1 != NULL)
-                {
+                while (fila1 != NULL){
                         // Busca se h� algum processo na fila de bloqueados,
                         // e se houve a interrup��o necess�ria para tornar o
                         // processo apto novamente.
@@ -244,8 +242,7 @@ void escalona (BCP *fila1, BCP *fila2, BCP *bloqueados)
                         // inserido no final da fila de aptos (fila1);
                         // 2 - A interrup��o � simulada por meio da gera��o de
                         // um valor aleat�rio.
-                        if ((bloqueados != NULL) && (interrupcao(bloqueados)))
-                        {
+                        if ((bloqueados != NULL) && (interrupcao(bloqueados))){
                                 // Pega o primeiro processo da fila de
                                 // bloqueados
                                 processo = bloqueados;
@@ -295,8 +292,7 @@ void escalona (BCP *fila1, BCP *fila2, BCP *bloqueados)
                                 
                         // 1 - Ele finalizou, quando n�o h� mais tempo
                         // restante de processamento a fazer.
-                        if (processo->tempo_restante <= 0)
-                        {       
+                        if (processo->tempo_restante <= 0){       
                                 // Neste caso, finaliza o processo
                                 estatisticas(processo, SEMSUMARIO);
                                 destroi_processo(processo);
