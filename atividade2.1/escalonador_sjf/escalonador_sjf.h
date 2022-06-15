@@ -9,7 +9,9 @@ typedef struct bcp
         char tipo[10];                  
         double faixa;    
         double tempo_restante;          
-        double tempo_espera;            
+        double tempo_espera;
+        unsigned int num_fila1;         
+        unsigned int num_bloqueado;               
         struct timeval inicio;          
         struct timeval fim;             
         struct bcp *prox;               
@@ -24,8 +26,14 @@ void destroi_processo (BCP *processo);
 
 void estatisticas (BCP *processo, int imprime_sumario);
 
+int interrupcao (BCP *bloqueados);
+
 BCP *inicializa_tempo (BCP *processo);
+
+BCP *getMinimo (BCP *fila1);
 
 double gera_tempo (BCP *processo);
 
-void escalona (BCP *fila1);
+BCP* exclui(double x, BCP* fila);
+
+void escalona (BCP *fila1, BCP *bloqueados);
