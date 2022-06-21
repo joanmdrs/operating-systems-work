@@ -318,8 +318,7 @@ void escalona (BCP *fila1, BCP *fila2, BCP *bloqueados)
 
 
                 // Se n�o houver nenhum processo na fila 1 
-                if (fila1 == NULL)
-                {
+                if (fila1 == NULL){
                         // E se tamb�m n�o houver nenhum processo na fila de
                         // bloqueados,
                         if (bloqueados == NULL)
