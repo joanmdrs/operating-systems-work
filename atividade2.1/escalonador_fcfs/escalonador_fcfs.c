@@ -8,12 +8,10 @@ int n;
 /**
  * Insere processo no final da fila passada
  */
-BCP *anexa_fila (BCP *processo, BCP *fila)
-{
+BCP *anexa_fila (BCP *processo, BCP *fila){
         BCP *aux;
         processo -> prox = NULL;
-        if (fila == NULL)
-        {
+        if (fila == NULL){
                 fila = processo;
                 return fila;
         }
@@ -31,8 +29,7 @@ BCP *anexa_fila (BCP *processo, BCP *fila)
  * - Define o tempo que o processo precisar� para finalizar sua tarefa
  *   (tempo_restante).
  */
-void cria_processo (BCP *processo)
-{       
+void cria_processo (BCP *processo){       
         static int id = 0; 
         processo->pid = id; /* pid do processo */
         processo->faixa = 2.0 * (double) random() / (double) RAND_MAX; /* faixa do processo */
@@ -56,8 +53,7 @@ void cria_processo (BCP *processo)
 /**
  * Mata um processo, apagando ele da mem�ria
  */
-void destroi_processo (BCP *processo)
-{
+void destroi_processo (BCP *processo){
         free (processo);
         return;
 }
@@ -68,16 +64,14 @@ void destroi_processo (BCP *processo)
  * � usado tanto quando um processo � finalizado, quanto no final de toda a
  * simula��o, exibindo um sum�rio, onde � exibido o tempo m�dio de espera.
  */
-void estatisticas (BCP *processo, int imprime_sumario)
-{
+void estatisticas (BCP *processo, int imprime_sumario){
         static int numero_processos = 0;
         static int num_cpu=0;
         static int num_io=0;
         static double tempo_total=0;
         static double tempo_cpu=0;
         static double tempo_io=0;
-        if(!imprime_sumario)
-        {
+        if(!imprime_sumario){
                 printf ("\nID do processo: %d\n", processo->pid);
                 printf ("Tipo de processo: %s (faixa = %.3f)\n", processo->tipo, processo->faixa);
                 printf ("Passagens pela fila 1:                  %d\n", processo->num_fila1);
@@ -86,21 +80,17 @@ void estatisticas (BCP *processo, int imprime_sumario)
                 printf ("Tempo de espera:                    %f s\n", processo->tempo_espera);
                 printf ("______________________________________________\n");
                 numero_processos++;
-                if (processo->faixa < 1)
-                {
+                if (processo->faixa < 1){
                         tempo_io += processo->tempo_espera;
                         num_io++;
                 }
-                else
-                {
+                else{
                         tempo_cpu += processo->tempo_espera;
                         num_cpu++;
                 }
                 tempo_total += processo->tempo_espera;
                 return;
-        }
-        else
-        {
+        } else{
                 printf ("\nSumario: \n\n");
                 printf ("Total de processos: %d\n",numero_processos);
                 printf ("Total de processos CPU Bound: %d\n",num_cpu);
@@ -121,8 +111,7 @@ void estatisticas (BCP *processo, int imprime_sumario)
  * Essencial para que o processo saia do estado bloqueado e volte � fila de
  * aptos.
  */
-int interrupcao (BCP *bloqueados)
-{
+int interrupcao (BCP *bloqueados){
         int randomico;
         if (bloqueados == NULL)
                 return 0;
@@ -138,13 +127,11 @@ int interrupcao (BCP *bloqueados)
  *
  * Efetua a subtra��o do tempo final pelo tempo inicial da contagem de espera.
  */
-BCP *inicializa_tempo (BCP *processo)
-{
-        if((processo->inicio.tv_sec != 0) && (processo->inicio.tv_usec != 0))
-        {
+BCP *inicializa_tempo (BCP *processo){
+        if((processo->inicio.tv_sec != 0) && (processo->inicio.tv_usec != 0)){
                 gettimeofday (&(processo->fim), NULL);
                 processo->tempo_espera += (double)(processo->fim.tv_sec + processo->fim.tv_usec*1.e-6) -
-                                          (processo->inicio.tv_sec + processo->inicio.tv_usec*1.e-6);
+                (processo->inicio.tv_sec + processo->inicio.tv_usec*1.e-6);
         }
         return processo;
 }
@@ -165,8 +152,7 @@ BCP *inicializa_tempo (BCP *processo)
  * Esta probabilidade � dada pela utiliza��o da "faixa" de cada processo
  * (I/O ou CPU Bound) na gera��o do tempo.
  */
-double gera_tempo (BCP *processo)
-{
+double gera_tempo (BCP *processo){
         double tempo_processador;
         tempo_processador = PI + (PI/2) + QUANTUM * processo->faixa * (double)random()/(double)RAND_MAX;
         
@@ -186,8 +172,7 @@ double gera_tempo (BCP *processo)
  *
  * Essencial para os algoritmos que possuem apenas uma fila (FIFO, SJF, RR).
  */
-BCP * conta_espera(BCP *fila1)
-{
+BCP * conta_espera(BCP *fila1){
     BCP * p = NULL;
     for (p = fila1; p != NULL; p = p->prox)
         gettimeofday (&(p->inicio), NULL);
@@ -201,8 +186,7 @@ BCP * conta_espera(BCP *fila1)
  * Principal ponto de modifica��o para a cria��o dos demais algoritmos
  * solicitados.
  */
-void escalona (BCP *fila1, BCP *fila2, BCP *bloqueados)
-{
+void escalona (BCP *fila1, BCP *fila2, BCP *bloqueados){
         /**
          * Ponteiro que vai apontar para o processo que estar� em execu��o.
          *
@@ -298,8 +282,7 @@ void escalona (BCP *fila1, BCP *fila2, BCP *bloqueados)
                                 destroi_processo(processo);
                         }
                                 // 2 - Ele parou para realizar uma E/S
-                        else
-                        {
+                        else{
                                 // Adiciona o processo na fila de
                                 // bloqueados, at� que ocorra uma
                                 // interrup��o que o retorne para a fila
@@ -329,8 +312,7 @@ void escalona (BCP *fila1, BCP *fila2, BCP *bloqueados)
                                 executa = 0;
                         // Caso ainda haja processos bloqueados, retir�-los
                         // para a fila de aptos (fila1).
-                        else
-                        {
+                        else{
                                 processo = bloqueados;
                                 bloqueados = processo->prox;
                                 gettimeofday(&(processo -> inicio), NULL);
@@ -348,8 +330,7 @@ void escalona (BCP *fila1, BCP *fila2, BCP *bloqueados)
  *
  * Realiza a chamada para a execu��o das demais fun��es.
  */
-int main(int argc, char **argv)
-{
+int main(int argc, char **argv){
         // Vari�vel de controle, para o for
         int i;
         // Estruturas que armazenar�o o inicio e fim da simula��o
@@ -368,8 +349,7 @@ int main(int argc, char **argv)
         BCP *bloqueados = NULL;
                 
         // S� permite o programa executar se seu uso for correto
-        if (argc != 2)
-        {
+        if (argc != 2){
                 printf("\nUso: ./escalonador [numero de processos]\n");
                 printf("Uso recomendado: ./escalonador [numero de processos] | less\n\n");
                 exit (1);
@@ -378,8 +358,7 @@ int main(int argc, char **argv)
         // Obtem o n�mero de processos informados na linha de comando
         n = atoi(argv[1]);      /* Numero de processos que serao executados */
 
-        if(n<=0)
-        {
+        if(n<=0){
                 printf("\nPor favor entre com um valor coerente...\n\n");
                 exit(1);
         }
@@ -389,8 +368,7 @@ int main(int argc, char **argv)
         /**
          * La�o para criar os n processos solicitados:
          */
-        for (i = 0; i < n; i++)
-        {
+        for (i = 0; i < n; i++){
                 // 1 - Cria o processo, alocando mem�ria para sua estrutura
                 processo = (BCP *) malloc (sizeof (BCP));
                 // 2 - Preenche os dados iniciais do processo

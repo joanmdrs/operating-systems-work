@@ -3,8 +3,7 @@
 #define COMSUMARIO !SEMSUMARIO
 #define PI 3.14159265359
 
-typedef struct bcp
-{
+typedef struct bcp{
         unsigned int pid;               
         char tipo[10];                  
         double faixa;    

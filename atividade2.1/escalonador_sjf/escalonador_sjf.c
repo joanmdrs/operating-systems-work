@@ -31,26 +31,25 @@ BCP *anexa_fila (BCP *processo, BCP *fila){
  * - Define o tempo que o processo precisar� para finalizar sua tarefa
  *   (tempo_restante).
  */
-void cria_processo (BCP *processo)
-{       
-        static int id = 0; 
-        processo->pid = id; /* pid do processo */
-        processo->faixa = 2.0 * (double) random() / (double) RAND_MAX; /* faixa do processo */
-        if (processo->faixa < 1)
-                sprintf(processo->tipo, "I/O Bound");
-        else
-                sprintf(processo->tipo, "CPU Bound");
-        processo->num_fila1 = 0; 
-        processo->num_bloqueado = 0;
-        processo->tempo_restante = (100 * (double) random() / (double) RAND_MAX);
-        processo->tempo_espera = 0;
-        processo->inicio.tv_sec = processo->inicio.tv_usec = 0;
-        processo->fim.tv_sec = processo->fim.tv_usec = 0;
-        processo->prox = NULL;
-        processo->ante = NULL;  
-         
-        id++; /* Incrementa o PID para ser atribuido ao proximo processo */
-        return;
+void cria_processo (BCP *processo){       
+  static int id = 0; 
+  processo->pid = id; /* pid do processo */
+  processo->faixa = 2.0 * (double) random() / (double) RAND_MAX; /* faixa do processo */
+  if (processo->faixa < 1)
+    sprintf(processo->tipo, "I/O Bound");
+  else
+    sprintf(processo->tipo, "CPU Bound");
+  processo->num_fila1 = 0; 
+  processo->num_bloqueado = 0;
+  processo->tempo_restante = (100 * (double) random() / (double) RAND_MAX);
+  processo->tempo_espera = 0;
+  processo->inicio.tv_sec = processo->inicio.tv_usec = 0;
+  processo->fim.tv_sec = processo->fim.tv_usec = 0;
+  processo->prox = NULL;
+  processo->ante = NULL;  
+    
+  id++; /* Incrementa o PID para ser atribuido ao proximo processo */
+  return;
 }
 
 
@@ -104,16 +103,15 @@ void estatisticas (BCP *processo, int imprime_sumario){
   }
 }
 
-int interrupcao (BCP *bloqueados)
-{
-        int randomico;
-        if (bloqueados == NULL)
-                return 0;
-        randomico = (int) (9.0 * (double) random() / (double) RAND_MAX);
-        if (randomico >= 5)
-                return 1;
-        else
-                return 0;
+int interrupcao (BCP *bloqueados){
+  int randomico;
+  if (bloqueados == NULL)
+    return 0;
+  randomico = (int) (9.0 * (double) random() / (double) RAND_MAX);
+  if (randomico >= 5)
+    return 1;
+  else
+    return 0;
 }
 
 
@@ -146,8 +144,7 @@ BCP *inicializa_tempo (BCP *processo){
  * Esta probabilidade � dada pela utiliza��o da "faixa" de cada processo
  * (I/O ou CPU Bound) na gera��o do tempo.
  */
-double gera_tempo (BCP *processo)
-{
+double gera_tempo (BCP *processo){
   double tempo_processador;
   tempo_processador = PI + (PI/2) + QUANTUM * processo->faixa * (double)random()/(double)RAND_MAX;
   
@@ -167,8 +164,7 @@ double gera_tempo (BCP *processo)
  *
  * Essencial para os algoritmos que possuem apenas uma fila (FIFO, SJF, RR).
  */
-BCP * conta_espera(BCP *fila1)
-{
+BCP * conta_espera(BCP *fila1){
   BCP * p = NULL;
   for (p = fila1; p != NULL; p = p->prox)
     gettimeofday (&(p->inicio), NULL);
@@ -223,143 +219,141 @@ BCP* exclui(double x, BCP* fila){
  * solicitados.
  */
 void escalona (BCP *fila_aux, BCP *bloqueados){
-        /**
-         * Ponteiro que vai apontar para o processo que estar� em execu��o.
-         *
-         * � importante observar que este ponteiro simula o processo que est�
-         * no estado "executando", onde s� pode haver um processo por vez.
-         */
-        BCP *processo = NULL;
+  /**
+    * Ponteiro que vai apontar para o processo que estar� em execu��o.
+    *
+    * � importante observar que este ponteiro simula o processo que est�
+    * no estado "executando", onde s� pode haver um processo por vez.
+    */
+  BCP *processo = NULL;
 
-        // Vari�veis de controle para os la�os
-        int executa = 1, i;
+  // Vari�veis de controle para os la�os
+  int executa = 1, i;
 
-        // Armazenar� o valor gerado para simular o tempo que o processo
-        // passar� processando.
-        double tempo_processador;
+  // Armazenar� o valor gerado para simular o tempo que o processo
+  // passar� processando.
+  double tempo_processador;
 
-        // Modifica��o 2: Inicia a contagem do tempo de espera j� quando os
-        // processos est�o na fila1
-        fila_aux = conta_espera(fila_aux);
+  // Modifica��o 2: Inicia a contagem do tempo de espera j� quando os
+  // processos est�o na fila1
+  fila_aux = conta_espera(fila_aux);
 
-        // Executar� o programa enquanto ainda houver processos necessitando
-        // ser processador, quando seu tempo_restante for maior que 0
-        while (executa){
-                // Processa os processos da fila1.
-                //
-                // Pontos a analisar:
-                //
-                // 1 - Executar� enquanto houver processos nesta fila;
-                // 2 - Sempre executar� os processos da fila1 antes da fila2, dando prioridade � fila1.
-                while (fila_aux != NULL){
-                        // Busca se h� algum processo na fila de bloqueados,
-                        // e se houve a interrup��o necess�ria para tornar o
-                        // processo apto novamente.
-                        //
-                        // Ponto a analisar:
-                        // 1 - Este teste � feito a cada vez que o la�o
-                        // inicia, mas o processo que estava bloqueado �
-                        // inserido no final da fila de aptos (fila1);
-                        // 2 - A interrup��o � simulada por meio da gera��o de
-                        // um valor aleat�rio.
-                        if ((bloqueados != NULL) && (interrupcao(bloqueados))){
-                                // Pega o primeiro processo da fila de
-                                // bloqueados
-                                processo = bloqueados;
-                                // Anda a fila de bloqueados
-                                bloqueados = processo->prox;
-                                // Inicia a contagem do tempo de espera em que
-                                // o processo entre na fila, at� que seja processado.
-                                gettimeofday(&(processo -> inicio), NULL);
-                                // Incrementa a quantidade de vezes que o
-                                // processo entrou na fila1
-                                processo->num_fila1++;
-                                // Insere o processo no final da fila1
-                                fila_aux = anexa_fila (processo, fila_aux);
-                        }
+  // Executar� o programa enquanto ainda houver processos necessitando
+  // ser processador, quando seu tempo_restante for maior que 0
+  while (executa){
+          // Processa os processos da fila1.
+          //
+          // Pontos a analisar:
+          //
+          // 1 - Executar� enquanto houver processos nesta fila;
+          // 2 - Sempre executar� os processos da fila1 antes da fila2, dando prioridade � fila1.
+    while (fila_aux != NULL){
+      // Busca se h� algum processo na fila de bloqueados,
+      // e se houve a interrup��o necess�ria para tornar o
+      // processo apto novamente.
+      //
+      // Ponto a analisar:
+      // 1 - Este teste � feito a cada vez que o la�o
+      // inicia, mas o processo que estava bloqueado �
+      // inserido no final da fila de aptos (fila1);
+      // 2 - A interrup��o � simulada por meio da gera��o de
+      // um valor aleat�rio.
+      if ((bloqueados != NULL) && (interrupcao(bloqueados))){
+        // Pega o primeiro processo da fila de
+        // bloqueados
+        processo = bloqueados;
+        // Anda a fila de bloqueados
+        bloqueados = processo->prox;
+        // Inicia a contagem do tempo de espera em que
+        // o processo entre na fila, at� que seja processado.
+        gettimeofday(&(processo -> inicio), NULL);
+        // Incrementa a quantidade de vezes que o
+        // processo entrou na fila1
+        processo->num_fila1++;
+        // Insere o processo no final da fila1
+        fila_aux = anexa_fila (processo, fila_aux);
+      }
 
-                        /** Inicio da simula��o de execu��o do processo **/
-                        
-                        // Pega primeiro processo da fila1, simula colocar o
-                        // processo no estado executando
-                        processo = fila_aux;
-                        
-                        // Retira o processo da fila1, anda a fila
-                        fila_aux = processo -> prox;
-                        
-                        // Contabiliza o tempo esperado pelo processo, desde
-                        // que entrou na fila at� agora, quando inicia seu
-                        // estado de execu��o.
-                        processo=inicializa_tempo(processo);
-                        
-                        // Simula quanto tempo o processo ir� passar
-                        // executando no processador.
-                        //
-                        // Este valor definir� o que ocorrer� com o processo.
-                        tempo_processador = gera_tempo(processo);
+      /** Inicio da simula��o de execu��o do processo **/
+      
+      // Pega primeiro processo da fila1, simula colocar o
+      // processo no estado executando
+      processo = fila_aux;
+      
+      // Retira o processo da fila1, anda a fila
+      fila_aux = processo -> prox;
+      
+      // Contabiliza o tempo esperado pelo processo, desde
+      // que entrou na fila at� agora, quando inicia seu
+      // estado de execu��o.
+      processo=inicializa_tempo(processo);
+      
+      // Simula quanto tempo o processo ir� passar
+      // executando no processador.
+      //
+      // Este valor definir� o que ocorrer� com o processo.
+      tempo_processador = gera_tempo(processo);
 
-                        // Diminui do tempo restante de processamento
-                        // o tempo de processador que o processo
-                        // conseguiu.
-                        processo->tempo_restante -= tempo_processador;
-                                
-                        // Roda a simula��o da execu��o do processo.
-                        //
-                        // Modifica��o 5: roda a simula��o mesmo que
-                        // ele v� terminar depois disso.
-                        for (i=0; i < (int) tempo_processador; i++);
+      // Diminui do tempo restante de processamento
+      // o tempo de processador que o processo
+      // conseguiu.
+      processo->tempo_restante -= tempo_processador;
+              
+      // Roda a simula��o da execu��o do processo.
+      //
+      // Modifica��o 5: roda a simula��o mesmo que
+      // ele v� terminar depois disso.
+      for (i=0; i < (int) tempo_processador; i++);
 
-                                
-                        // 1 - Ele finalizou, quando n�o h� mais tempo
-                        // restante de processamento a fazer.
-                        if (processo->tempo_restante <= 0){       
-                                // Neste caso, finaliza o processo
-                                estatisticas(processo, SEMSUMARIO);
-                        }
-                                // 2 - Ele parou para realizar uma E/S
-                        else
-                        {
-                                // Adiciona o processo na fila de
-                                // bloqueados, at� que ocorra uma
-                                // interrup��o que o retorne para a fila
-                                // de aptos.
-                                //
-                                // Ponto a analisar:
-                                // 1 - A fila de processos bloqueados
-                                // segue uma sequencia FIFO, j� que o
-                                // primeiro processo a entrar nesta fila
-                                // ser� sempre o primeiro a ser servido,
-                                // retornando para a fila de aptos.
-                                processo->num_bloqueado++;
-                                bloqueados=anexa_fila(processo, bloqueados);
-                        }
-                }
+              
+      // 1 - Ele finalizou, quando n�o h� mais tempo
+      // restante de processamento a fazer.
+      if (processo->tempo_restante <= 0){       
+        // Neste caso, finaliza o processo
+        estatisticas(processo, SEMSUMARIO);
+      }
+      // 2 - Ele parou para realizar uma E/S
+      else{
+        // Adiciona o processo na fila de
+        // bloqueados, at� que ocorra uma
+        // interrup��o que o retorne para a fila
+        // de aptos.
+        //
+        // Ponto a analisar:
+        // 1 - A fila de processos bloqueados
+        // segue uma sequencia FIFO, j� que o
+        // primeiro processo a entrar nesta fila
+        // ser� sempre o primeiro a ser servido,
+        // retornando para a fila de aptos.
+        processo->num_bloqueado++;
+        bloqueados=anexa_fila(processo, bloqueados);
+      }
+    }
 
 
-                // Se n�o houver nenhum processo na fila 1 
-                if (fila_aux == NULL){
-                        // E se tamb�m n�o houver nenhum processo na fila de
-                        // bloqueados,
-                        if (bloqueados == NULL)
-                                // Todos os processos foram finalizados,
-                                // devendo o escalonador ser finalizado
-                                // tamb�m, setando esta vari�vel para
-                                // finalizar a execu��o do la�o maior.
-                                executa = 0;
-                        // Caso ainda haja processos bloqueados, retir�-los
-                        // para a fila de aptos (fila1).
-                        else
-                        {
-                                processo = bloqueados;
-                                bloqueados = processo->prox;
-                                gettimeofday(&(processo -> inicio), NULL);
-                                processo->num_fila1++;
-                                fila_aux = anexa_fila (processo, fila_aux);   
-                        }
-                }
-        }
+    // Se n�o houver nenhum processo na fila 1 
+    if (fila_aux == NULL){
+      // E se tamb�m n�o houver nenhum processo na fila de
+      // bloqueados,
+      if (bloqueados == NULL)
+        // Todos os processos foram finalizados,
+        // devendo o escalonador ser finalizado
+        // tamb�m, setando esta vari�vel para
+        // finalizar a execu��o do la�o maior.
+        executa = 0;
+      // Caso ainda haja processos bloqueados, retir�-los
+      // para a fila de aptos (fila1).
+      else{
+        processo = bloqueados;
+        bloqueados = processo->prox;
+        gettimeofday(&(processo -> inicio), NULL);
+        processo->num_fila1++;
+        fila_aux = anexa_fila (processo, fila_aux);   
+      }
+    }
+  }
 
-        return;
+  return;
 }
 
  /*

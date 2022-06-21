@@ -8,12 +8,10 @@ int n;
 /**
  * Insere processo no final da fila passada
  */
-BCP *anexa_fila (BCP *processo, BCP *fila)
-{
+BCP *anexa_fila (BCP *processo, BCP *fila){
         BCP *aux;
         processo -> prox = NULL;
-        if (fila == NULL)
-        {
+        if (fila == NULL){
                 fila = processo;
                 return fila;
         }
@@ -27,12 +25,11 @@ BCP *anexa_fila (BCP *processo, BCP *fila)
  *
  * Principais pontos a analisar:
  *
- * - Define a faixa dele (se é CPU ou I/O Bound); e
- * - Define o tempo que o processo precisará para finalizar sua tarefa
+ * - Define a faixa dele (se ï¿½ CPU ou I/O Bound); e
+ * - Define o tempo que o processo precisarï¿½ para finalizar sua tarefa
  *   (tempo_restante).
  */
-void cria_processo (BCP *processo)
-{       
+void cria_processo (BCP *processo){       
         static int id = 0; 
         processo->pid = id; /* pid do processo */
         processo->faixa = 2.0 * (double) random() / (double) RAND_MAX; /* faixa do processo */
@@ -54,30 +51,27 @@ void cria_processo (BCP *processo)
 }
 
 /**
- * Mata um processo, apagando ele da memória
+ * Mata um processo, apagando ele da memï¿½ria
  */
-void destroi_processo (BCP *processo)
-{
+void destroi_processo (BCP *processo){
         free (processo);
         return;
 }
 
 /**
- * Imprime na tela as estatísticas de um processo.
+ * Imprime na tela as estatï¿½sticas de um processo.
  *
- * É usado tanto quando um processo é finalizado, quanto no final de toda a
- * simulação, exibindo um sumário, onde é exibido o tempo médio de espera.
+ * ï¿½ usado tanto quando um processo ï¿½ finalizado, quanto no final de toda a
+ * simulaï¿½ï¿½o, exibindo um sumï¿½rio, onde ï¿½ exibido o tempo mï¿½dio de espera.
  */
-void estatisticas (BCP *processo, int imprime_sumario)
-{
+void estatisticas (BCP *processo, int imprime_sumario){
         static int numero_processos = 0;
         static int num_cpu=0;
         static int num_io=0;
         static double tempo_total=0;
         static double tempo_cpu=0;
         static double tempo_io=0;
-        if(!imprime_sumario)
-        {
+        if(!imprime_sumario){
                 printf ("\nID do processo: %d\n", processo->pid);
                 printf ("Tipo de processo: %s (faixa = %.3f)\n", processo->tipo, processo->faixa);
                 printf ("Passagens pela fila 1:                  %d\n", processo->num_fila1);
@@ -86,21 +80,16 @@ void estatisticas (BCP *processo, int imprime_sumario)
                 printf ("Tempo de espera:                    %f s\n", processo->tempo_espera);
                 printf ("______________________________________________\n");
                 numero_processos++;
-                if (processo->faixa < 1)
-                {
+                if (processo->faixa < 1){
                         tempo_io += processo->tempo_espera;
                         num_io++;
-                }
-                else
-                {
+                } else{
                         tempo_cpu += processo->tempo_espera;
                         num_cpu++;
                 }
                 tempo_total += processo->tempo_espera;
                 return;
-        }
-        else
-        {
+        } else{
                 printf ("\nSumario: \n\n");
                 printf ("Total de processos: %d\n",numero_processos);
                 printf ("Total de processos CPU Bound: %d\n",num_cpu);
@@ -116,13 +105,12 @@ void estatisticas (BCP *processo, int imprime_sumario)
 }
 
 /**
- * Simula a ocorrência de uma interrupção para um processo que está bloqueado.
+ * Simula a ocorrï¿½ncia de uma interrupï¿½ï¿½o para um processo que estï¿½ bloqueado.
  *
- * Essencial para que o processo saia do estado bloqueado e volte à fila de
+ * Essencial para que o processo saia do estado bloqueado e volte ï¿½ fila de
  * aptos.
  */
-int interrupcao (BCP *bloqueados)
-{
+int interrupcao (BCP *bloqueados){
         int randomico;
         if (bloqueados == NULL)
                 return 0;
@@ -136,37 +124,34 @@ int interrupcao (BCP *bloqueados)
 /**
  * Calcula o tempo em que o processo estava aguardando para ser processado. 
  *
- * Efetua a subtração do tempo final pelo tempo inicial da contagem de espera.
+ * Efetua a subtraï¿½ï¿½o do tempo final pelo tempo inicial da contagem de espera.
  */
-BCP *inicializa_tempo (BCP *processo)
-{
-        if((processo->inicio.tv_sec != 0) && (processo->inicio.tv_usec != 0))
-        {
+BCP *inicializa_tempo (BCP *processo){
+        if((processo->inicio.tv_sec != 0) && (processo->inicio.tv_usec != 0)){
                 gettimeofday (&(processo->fim), NULL);
                 processo->tempo_espera += (double)(processo->fim.tv_sec + processo->fim.tv_usec*1.e-6) -
-                                          (processo->inicio.tv_sec + processo->inicio.tv_usec*1.e-6);
+                (processo->inicio.tv_sec + processo->inicio.tv_usec*1.e-6);
         }
         return processo;
 }
 
 /**
- * Gera um tempo aleatório para simular o tempo em que um processo passará na CPU.
+ * Gera um tempo aleatï¿½rio para simular o tempo em que um processo passarï¿½ na CPU.
  *
- * Essencial para simular os eventos que o processo poderá ter durante sua
- * execução, como para saber se ele continuará em execução ou se necessitará
- * bloquear por uma entrada e saída (E/S).
+ * Essencial para simular os eventos que o processo poderï¿½ ter durante sua
+ * execuï¿½ï¿½o, como para saber se ele continuarï¿½ em execuï¿½ï¿½o ou se necessitarï¿½
+ * bloquear por uma entrada e saï¿½da (E/S).
  *
  * Ponto a analisar:
- *  - Processos CPU Bound têm uma maior probabilidade de continuar executando,
- *  pois gerará um tempo de processador maior que QUANTUM;
- *  - Processos I/O Bound têm uma maior probabilidade de gerar um tempo
- *  aleatório menor que o QUANTUM, o que o levaria a mais eventos de E/S.
+ *  - Processos CPU Bound tï¿½m uma maior probabilidade de continuar executando,
+ *  pois gerarï¿½ um tempo de processador maior que QUANTUM;
+ *  - Processos I/O Bound tï¿½m uma maior probabilidade de gerar um tempo
+ *  aleatï¿½rio menor que o QUANTUM, o que o levaria a mais eventos de E/S.
  *
- * Esta probabilidade é dada pela utilização da "faixa" de cada processo
- * (I/O ou CPU Bound) na geração do tempo.
+ * Esta probabilidade ï¿½ dada pela utilizaï¿½ï¿½o da "faixa" de cada processo
+ * (I/O ou CPU Bound) na geraï¿½ï¿½o do tempo.
  */
-double gera_tempo (BCP *processo)
-{
+double gera_tempo (BCP *processo){
         double tempo_processador;
         tempo_processador = PI + (PI/2) + QUANTUM * processo->faixa * (double)random()/(double)RAND_MAX;
         
@@ -181,13 +166,12 @@ double gera_tempo (BCP *processo)
 }
 
 /**
- * Modificação 1: Inicia a contagem do tempo de espera mesmo quando o processo
+ * Modificaï¿½ï¿½o 1: Inicia a contagem do tempo de espera mesmo quando o processo
  * entra na fila1.
  *
  * Essencial para os algoritmos que possuem apenas uma fila (FIFO, SJF, RR).
  */
-BCP * conta_espera(BCP *fila1)
-{
+BCP * conta_espera(BCP *fila1){
     BCP * p = NULL;
     for (p = fila1; p != NULL; p = p->prox)
         gettimeofday (&(p->inicio), NULL);
@@ -196,63 +180,59 @@ BCP * conta_espera(BCP *fila1)
 }
 
 /**
- * Função que efetua o algoritmo de escalonamento dos processos.
+ * Funï¿½ï¿½o que efetua o algoritmo de escalonamento dos processos.
  *
- * Principal ponto de modificação para a criação dos demais algoritmos
+ * Principal ponto de modificaï¿½ï¿½o para a criaï¿½ï¿½o dos demais algoritmos
  * solicitados.
  */
-void escalona (BCP *fila1, BCP *fila2, BCP *bloqueados)
-{
+void escalona (BCP *fila1, BCP *fila2, BCP *bloqueados){
         /**
-         * Ponteiro que vai apontar para o processo que estará em execução.
+         * Ponteiro que vai apontar para o processo que estarï¿½ em execuï¿½ï¿½o.
          *
-         * É importante observar que este ponteiro simula o processo que está
-         * no estado "executando", onde só pode haver um processo por vez.
+         * ï¿½ importante observar que este ponteiro simula o processo que estï¿½
+         * no estado "executando", onde sï¿½ pode haver um processo por vez.
          */
         BCP *processo = NULL;
 
-        // Variáveis de controle para os laços
+        // Variï¿½veis de controle para os laï¿½os
         int executa = 1, i;
 
-        // Armazenará o valor gerado para simular o tempo que o processo
-        // passará processando.
+        // Armazenarï¿½ o valor gerado para simular o tempo que o processo
+        // passarï¿½ processando.
         double tempo_processador;
 
-        // Modificação 2: Inicia a contagem do tempo de espera já quando os
-        // processos estão na fila1
+        // Modificaï¿½ï¿½o 2: Inicia a contagem do tempo de espera jï¿½ quando os
+        // processos estï¿½o na fila1
         fila1 = conta_espera(fila1);
 
-        // Executará o programa enquanto ainda houver processos necessitando
+        // Executarï¿½ o programa enquanto ainda houver processos necessitando
         // ser processador, quando seu tempo_restante for maior que 0
-        while (executa)
-        {
+        while (executa){
                 // Processa os processos da fila1.
                 //
                 // Pontos a analisar:
                 //
-                // 1 - Executará enquanto houver processos nesta fila;
-                // 2 - Sempre executará os processos da fila1 antes da fila2, dando prioridade à fila1.
-                while (fila1 != NULL)
-                {
-                        // Busca se há algum processo na fila de bloqueados,
-                        // e se houve a interrupção necessária para tornar o
+                // 1 - Executarï¿½ enquanto houver processos nesta fila;
+                // 2 - Sempre executarï¿½ os processos da fila1 antes da fila2, dando prioridade ï¿½ fila1.
+                while (fila1 != NULL){
+                        // Busca se hï¿½ algum processo na fila de bloqueados,
+                        // e se houve a interrupï¿½ï¿½o necessï¿½ria para tornar o
                         // processo apto novamente.
                         //
                         // Ponto a analisar:
-                        // 1 - Este teste é feito a cada vez que o laço
-                        // inicia, mas o processo que estava bloqueado é
+                        // 1 - Este teste ï¿½ feito a cada vez que o laï¿½o
+                        // inicia, mas o processo que estava bloqueado ï¿½
                         // inserido no final da fila de aptos (fila1);
-                        // 2 - A interrupção é simulada por meio da geração de
-                        // um valor aleatório.
-                        if ((bloqueados != NULL) && (interrupcao(bloqueados)))
-                        {
+                        // 2 - A interrupï¿½ï¿½o ï¿½ simulada por meio da geraï¿½ï¿½o de
+                        // um valor aleatï¿½rio.
+                        if ((bloqueados != NULL) && (interrupcao(bloqueados))){
                                 // Pega o primeiro processo da fila de
                                 // bloqueados
                                 processo = bloqueados;
                                 // Anda a fila de bloqueados
                                 bloqueados = processo->prox;
                                 // Inicia a contagem do tempo de espera em que
-                                // o processo entre na fila, até que seja processado.
+                                // o processo entre na fila, atï¿½ que seja processado.
                                 gettimeofday(&(processo -> inicio), NULL);
                                 // Incrementa a quantidade de vezes que o
                                 // processo entrou na fila1
@@ -261,7 +241,7 @@ void escalona (BCP *fila1, BCP *fila2, BCP *bloqueados)
                                 fila1 = anexa_fila (processo, fila1);
                         }
 
-                        /** Inicio da simulação de execução do processo **/
+                        /** Inicio da simulaï¿½ï¿½o de execuï¿½ï¿½o do processo **/
                         
                         // Pega primeiro processo da fila1, simula colocar o
                         // processo no estado executando
@@ -271,69 +251,65 @@ void escalona (BCP *fila1, BCP *fila2, BCP *bloqueados)
                         fila1 = processo -> prox;
                         
                         // Contabiliza o tempo esperado pelo processo, desde
-                        // que entrou na fila até agora, quando inicia seu
-                        // estado de execução.
+                        // que entrou na fila atï¿½ agora, quando inicia seu
+                        // estado de execuï¿½ï¿½o.
                         processo=inicializa_tempo(processo);
                         
-                        // Simula quanto tempo o processo irá passar
+                        // Simula quanto tempo o processo irï¿½ passar
                         // executando no processador.
                         //
-                        // Este valor definirá o que ocorrerá com o processo.
+                        // Este valor definirï¿½ o que ocorrerï¿½ com o processo.
                         tempo_processador = gera_tempo(processo);
 
-                        // Verificação se o tempo de processador gerado é
+                        // Verificaï¿½ï¿½o se o tempo de processador gerado ï¿½
                         // maior do que o QUANTUM.
                         //
-                        // O processo necessitará de um tempo de processamento
-                        // maior do que o permitido, que é o valor do QUANTUM
+                        // O processo necessitarï¿½ de um tempo de processamento
+                        // maior do que o permitido, que ï¿½ o valor do QUANTUM
                         // (10 segundos).
                         // 
                         // Ponto a analisar:
                         // 1 - Neste caso, o processo usou todo o seu QUANTUM, 
                         // logo vai para o fim da fila2, perdendo prioridade
-                        // para os processos que estão na fila1
-                        // 2 - Não é permitido que o processo passe mais tempo
+                        // para os processos que estï¿½o na fila1
+                        // 2 - Nï¿½o ï¿½ permitido que o processo passe mais tempo
                         // executando do que o valor do QUANTUM, logo o
-                        // tempo_processador é substituído pelo valor do
+                        // tempo_processador ï¿½ substituï¿½do pelo valor do
                         // QUANTUM.
-                        if (tempo_processador > QUANTUM)
-                        {
+                        if (tempo_processador > QUANTUM){
                                 // Reduz do tempo restante do processador
-                                // apenas o valor máximo permitido para
-                                // processamento, que é o QUANTUM.
+                                // apenas o valor mï¿½ximo permitido para
+                                // processamento, que ï¿½ o QUANTUM.
                                 //
                                 // Simula que o processador utilizou todo o
-                                // seu QUANTUM de tempo máximo permitido.
+                                // seu QUANTUM de tempo mï¿½ximo permitido.
                                 processo->tempo_restante -= QUANTUM;
 
-                                // Simulação da execução do processo, um "for"
-                                // sem nenhuma ação.
+                                // Simulaï¿½ï¿½o da execuï¿½ï¿½o do processo, um "for"
+                                // sem nenhuma aï¿½ï¿½o.
                                 //
-                                // Modificação 3: Executa apenas o tempo
-                                // máximo do QUANTUM, não mais o tempo
+                                // Modificaï¿½ï¿½o 3: Executa apenas o tempo
+                                // mï¿½ximo do QUANTUM, nï¿½o mais o tempo
                                 // excedente gerado pelo tempo_processador.
                                 for (i=0; i < (int) QUANTUM; i++);
                                 
-                                // Modificação 4: Verifica se a execução do
+                                // Modificaï¿½ï¿½o 4: Verifica se a execuï¿½ï¿½o do
                                 // processo foi suficiente para que sua tarefa
-                                // seja concluída.
+                                // seja concluï¿½da.
                                 //
-                                // Caso não falte mais nada para fazer, 
-                                // o tempo_restante do processo será zerado,
+                                // Caso nï¿½o falte mais nada para fazer, 
+                                // o tempo_restante do processo serï¿½ zerado,
                                 // ou negativo.
-                                if (processo->tempo_restante <= 0)
-                                {
-                                    // Neste caso, a execucao está terminada,
+                                if (processo->tempo_restante <= 0){
+                                    // Neste caso, a execucao estï¿½ terminada,
                                     // Sendo o processo finalizado e suas
-                                    // estatísticas individuais exibidas na
+                                    // estatï¿½sticas individuais exibidas na
                                     // tela.
                                     estatisticas(processo, SEMSUMARIO);
                                     destroi_processo(processo);
-                                }
-                                else // AVISO: este else estava faltando no codigo
-                                {
+                                } else{
                                     // Ponto a analisa:
-                                    // 1 - Neste ponto simula-se a saída do processo
+                                    // 1 - Neste ponto simula-se a saï¿½da do processo
                                     // do estado de executando para apto, mas
                                     // neste caso, ele perde prioridade quando usa
                                     // todo o seu QUANTUM, indo para o final da
@@ -350,46 +326,42 @@ void escalona (BCP *fila1, BCP *fila2, BCP *bloqueados)
                                     // Insere o processo no final da fila2
                                     fila2=anexa_fila(processo, fila2);
                                 }
-                        }
-                        else
-                        {       
+                        } else{       
                                 // Diminui do tempo restante de processamento
                                 // o tempo de processador que o processo
                                 // conseguiu.
                                 processo->tempo_restante -= tempo_processador;
                                 
-                                // Roda a simulação da execução do processo.
+                                // Roda a simulaï¿½ï¿½o da execuï¿½ï¿½o do processo.
                                 //
-                                // Modificação 5: roda a simulação mesmo que
-                                // ele vá terminar depois disso.
+                                // Modificaï¿½ï¿½o 5: roda a simulaï¿½ï¿½o mesmo que
+                                // ele vï¿½ terminar depois disso.
                                 for (i=0; i < (int) tempo_processador; i++);
 
-                                // Caso o processo não tenha utilizado todo o
-                                // QUANTUM disponível para processamento, é
-                                // simulado que duas possíveis situações
+                                // Caso o processo nï¿½o tenha utilizado todo o
+                                // QUANTUM disponï¿½vel para processamento, ï¿½
+                                // simulado que duas possï¿½veis situaï¿½ï¿½es
                                 // ocorreu:
                                 
-                                // 1 - Ele finalizou, quando não há mais tempo
+                                // 1 - Ele finalizou, quando nï¿½o hï¿½ mais tempo
                                 // restante de processamento a fazer.
-                                if (processo->tempo_restante <= 0)
-                                {       
+                                if (processo->tempo_restante <= 0){       
                                     // Neste caso, finaliza o processo
                                     estatisticas(processo, SEMSUMARIO);
                                     destroi_processo(processo);
                                 }
                                 // 2 - Ele parou para realizar uma E/S
-                                else
-                                {
+                                else{
                                     // Adiciona o processo na fila de
-                                    // bloqueados, até que ocorra uma
-                                    // interrupção que o retorne para a fila
+                                    // bloqueados, atï¿½ que ocorra uma
+                                    // interrupï¿½ï¿½o que o retorne para a fila
                                     // de aptos.
                                     //
                                     // Ponto a analisar:
                                     // 1 - A fila de processos bloqueados
-                                    // segue uma sequencia FIFO, já que o
+                                    // segue uma sequencia FIFO, jï¿½ que o
                                     // primeiro processo a entrar nesta fila
-                                    // será sempre o primeiro a ser servido,
+                                    // serï¿½ sempre o primeiro a ser servido,
                                     // retornando para a fila de aptos.
                                     processo->num_bloqueado++;
                                     bloqueados=anexa_fila(processo, bloqueados);
@@ -397,26 +369,24 @@ void escalona (BCP *fila1, BCP *fila2, BCP *bloqueados)
                         }
                 }
 
-                // Processamento dos processos que estão na fila2
+                // Processamento dos processos que estï¿½o na fila2
                 //
                 // Ponto a analisar:
                 // 1 - Este processos possuem menor prioridade do que os
                 // processos da fila2.
-                // 2 - Só serão processados os processos da fila2 se não
+                // 2 - Sï¿½ serï¿½o processados os processos da fila2 se nï¿½o
                 // houver processos na fila1.
                 //         
-                // Os procedimentos realizados na fila2 são os mesmos dos
-                // comentados acima para a fila1, só que focando na fila2.
-                while (fila2 != NULL && fila1 == NULL)
-                {
-                        // Verifica se há interrupções para processos
+                // Os procedimentos realizados na fila2 sï¿½o os mesmos dos
+                // comentados acima para a fila1, sï¿½ que focando na fila2.
+                while (fila2 != NULL && fila1 == NULL){
+                        // Verifica se hï¿½ interrupï¿½ï¿½es para processos
                         // bloqueados, e os retorna para a fila1.
                         //
                         // Ponto a analisar:
                         // 1 - Os processos bloqueados sempre retornam para a
                         // fila1.
-                        if ((bloqueados != NULL) && (interrupcao(bloqueados)))
-                        {
+                        if ((bloqueados != NULL) && (interrupcao(bloqueados))){
                                 processo = bloqueados;
                                 bloqueados = processo->prox;
                                 gettimeofday(&(processo -> inicio), NULL);
@@ -424,7 +394,7 @@ void escalona (BCP *fila1, BCP *fila2, BCP *bloqueados)
                                 fila1 = anexa_fila (processo, fila1);
                         }
 
-                        // Coloca o primeiro processo da fila2 em execução.
+                        // Coloca o primeiro processo da fila2 em execuï¿½ï¿½o.
                         processo = fila2;
 
                         // Anda a fila2.
@@ -436,86 +406,77 @@ void escalona (BCP *fila1, BCP *fila2, BCP *bloqueados)
                         // Gera tempo simulado de processador
                         tempo_processador = gera_tempo(processo);
 
-                        // Verifica se o processo utilizará mais tempo do que
+                        // Verifica se o processo utilizarï¿½ mais tempo do que
                         // o permitido em QUANTUM
-                        if (tempo_processador > QUANTUM)
-                        {       
+                        if (tempo_processador > QUANTUM){       
                                 // Reduz o tempo de QUANTUM do tempo restante de processamento, 
                                 // o processo utilizou todo o seu QUANTUM.
                                 processo->tempo_restante -= QUANTUM;
 
-                                // Modificação 6: Somente executa o tempo do
-                                // QUANTUM, não mais o excesso gerado.
+                                // Modificaï¿½ï¿½o 6: Somente executa o tempo do
+                                // QUANTUM, nï¿½o mais o excesso gerado.
                                 for (i=0; i < (int) QUANTUM; i++);
                                 
-                                // Modificação 7: Verifica se o processo
+                                // Modificaï¿½ï¿½o 7: Verifica se o processo
                                 // finalizou o seu tempo restante, devendo ser
                                 // finalizado.
-                                if (processo->tempo_restante <= 0)
-                                {       
+                                if (processo->tempo_restante <= 0){       
                                         /* Execucao terminada */
                                         estatisticas(processo, SEMSUMARIO);
                                         destroi_processo(processo);
-                                }
-                                else
-                                {
+                                } else{
                                     // Insere o processo no final da fila2.
                                     //
                                     // Ponto a analisar:
-                                    // 1 - Se o processo já está na fila2, ele
-                                    // retornará para o final desta mesma fila.
+                                    // 1 - Se o processo jï¿½ estï¿½ na fila2, ele
+                                    // retornarï¿½ para o final desta mesma fila.
                                     processo->num_fila2++;
                                     gettimeofday(&(processo -> inicio), NULL);
                                     fila2 = anexa_fila(processo, fila2);
                                 }
                         }
-                        // Caso o processo não tenha utilizado todo o seu
-                        // tempo, ou ele terminou ou irá esperar por E/S.
-                        else
-                        {       
+                        // Caso o processo nï¿½o tenha utilizado todo o seu
+                        // tempo, ou ele terminou ou irï¿½ esperar por E/S.
+                        else{       
                                 // Reduz do tempo restante o tempo simulador
                                 // de processamento.
                                 processo->tempo_restante -= tempo_processador;
                                 
-                                // Modificação 8: Simula o processamento
+                                // Modificaï¿½ï¿½o 8: Simula o processamento
                                 // independente se o processo foi termimar
-                                // após isto ou se ele for para bloqueado.
+                                // apï¿½s isto ou se ele for para bloqueado.
                                 for (i=0; i < (int) tempo_processador; i++);
 
-                                // Verifica se o processo irá ser finalizado.
-                                if (processo->tempo_restante <= 0)
-                                {       
+                                // Verifica se o processo irï¿½ ser finalizado.
+                                if (processo->tempo_restante <= 0){       
                                         /* Execucao terminada */
                                         estatisticas(processo, SEMSUMARIO);
                                         destroi_processo(processo);
                                 }
-                                // Ou se o processo irá entrar em estado
+                                // Ou se o processo irï¿½ entrar em estado
                                 // bloqueado, aguardando por uma E/S.
-                                else
-                                {
+                                else{
                                         processo->num_bloqueado++;
                                         bloqueados=anexa_fila(processo, bloqueados);
                                 }
                         }
                 }
 
-                // Verifica as condições para finalização do escalonador
+                // Verifica as condiï¿½ï¿½es para finalizaï¿½ï¿½o do escalonador
                 //
-                // Se não houver nenhum processo nas filas 1 e 2
-                if ((fila1 == NULL) && (fila2 == NULL))
-                {
-                        // E se também não houver nenhum processo na fila de
+                // Se nï¿½o houver nenhum processo nas filas 1 e 2
+                if ((fila1 == NULL) && (fila2 == NULL)){
+                        // E se tambï¿½m nï¿½o houver nenhum processo na fila de
                         // bloqueados,
                         if (bloqueados == NULL)
                                 // Todos os processos foram finalizados,
                                 // devendo o escalonador ser finalizado
-                                // também, setando esta variável para
-                                // finalizar a execução do laço maior.
+                                // tambï¿½m, setando esta variï¿½vel para
+                                // finalizar a execuï¿½ï¿½o do laï¿½o maior.
                                 executa = 0;
-                        // Caso ainda haja processos bloqueados, retirá-los
+                        // Caso ainda haja processos bloqueados, retirï¿½-los
                         // para a fila de aptos (fila1).
-                        else
-                        {
+                        else{
                                 processo = bloqueados;
                                 bloqueados = processo->prox;
                                 gettimeofday(&(processo -> inicio), NULL);
@@ -529,42 +490,39 @@ void escalona (BCP *fila1, BCP *fila2, BCP *bloqueados)
 }
 
 /**
- * Função principal do programa.
+ * Funï¿½ï¿½o principal do programa.
  *
- * Realiza a chamada para a execução das demais funções.
+ * Realiza a chamada para a execuï¿½ï¿½o das demais funï¿½ï¿½es.
  */
-int main(int argc, char **argv)
-{
-        // Variável de controle, para o for
+int main(int argc, char **argv){
+        // Variï¿½vel de controle, para o for
         int i;
-        // Estruturas que armazenarão o inicio e fim da simulação
+        // Estruturas que armazenarï¿½o o inicio e fim da simulaï¿½ï¿½o
         struct timeval comeco, fim;
 
         // Estrutura para manipular um processo
         BCP *processo;
 
-        // Ponteiro para o inínio da fila 1
+        // Ponteiro para o inï¿½nio da fila 1
         BCP *fila1 = NULL;
         
-        // Ponteiro para o inínio da fila 2
+        // Ponteiro para o inï¿½nio da fila 2
         BCP *fila2 = NULL;
         
-        // Ponteiro para o inínio da fila de bloqueados
+        // Ponteiro para o inï¿½nio da fila de bloqueados
         BCP *bloqueados = NULL;
                 
-        // Só permite o programa executar se seu uso for correto
-        if (argc != 2)
-        {
+        // Sï¿½ permite o programa executar se seu uso for correto
+        if (argc != 2){
                 printf("\nUso: ./escalonador [numero de processos]\n");
                 printf("Uso recomendado: ./escalonador [numero de processos] | less\n\n");
                 exit (1);
         }
         
-        // Obtem o número de processos informados na linha de comando
+        // Obtem o nï¿½mero de processos informados na linha de comando
         n = atoi(argv[1]);      /* Numero de processos que serao executados */
 
-        if(n<=0)
-        {
+        if(n<=0){
                 printf("\nPor favor entre com um valor coerente...\n\n");
                 exit(1);
         }
@@ -572,11 +530,10 @@ int main(int argc, char **argv)
         srand (time(NULL));     /* Gera uma nova semente de numeros aleatorios */
         
         /**
-         * Laço para criar os n processos solicitados:
+         * Laï¿½o para criar os n processos solicitados:
          */
-        for (i = 0; i < n; i++)
-        {
-                // 1 - Cria o processo, alocando memória para sua estrutura
+        for (i = 0; i < n; i++){
+                // 1 - Cria o processo, alocando memï¿½ria para sua estrutura
                 processo = (BCP *) malloc (sizeof (BCP));
                 // 2 - Preenche os dados iniciais do processo
                 cria_processo (processo);
@@ -595,7 +552,7 @@ int main(int argc, char **argv)
         /* Fim da contagem */
         gettimeofday(&fim, NULL);
 
-        // Imprime na tela um sumário de toda a simulação realizada
+        // Imprime na tela um sumï¿½rio de toda a simulaï¿½ï¿½o realizada
         estatisticas(NULL, COMSUMARIO);
 
         printf("Tempo total de simulacao: %f s\n\n",(double)(fim.tv_sec + fim.tv_usec*1.e-6) -
