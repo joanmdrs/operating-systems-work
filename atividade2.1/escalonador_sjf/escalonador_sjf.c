@@ -176,6 +176,8 @@ BCP * conta_espera(BCP *fila1)
   return fila1;
 }
 
+// A função getMinimo recebe uma fila como parâmetro e retorna o processo da fila que tem o menor tempo restante
+
 BCP * getMinimo(BCP *fila1){
   double minimo = 99999;
   BCP * aux = NULL;
@@ -193,6 +195,8 @@ BCP * getMinimo(BCP *fila1){
   }
   return aux;
 }
+
+// A função exclui recebe um tempo x e uma fila, e remove da fila o processo que possui um tempo restante correspondente ao tempo fornecido.
 
 BCP* exclui(double x, BCP* fila){
 	BCP* ant = NULL; 
@@ -413,6 +417,7 @@ int main(int argc, char **argv){
     processo->num_fila1++;
   }
 
+  //Nesse while, é gerada a fila auxiliar que contem a fila ordenada por tempo restante (menor para o maior)
   while(fila1 != NULL){
     aux = getMinimo(fila1);
     fila1 = exclui(aux->tempo_restante, fila1);
