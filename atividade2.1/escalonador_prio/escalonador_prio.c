@@ -531,19 +531,20 @@ int main(int argc, char **argv){
     */
   for (i = 0; i < n; i++){
 
+    //Gera um numero aleatório entre 0 e 10
     randomico = (int) (10 * (double) random() / (double) RAND_MAX);
     // 1 - Cria o processo, alocando mem�ria para sua estrutura
     processo = (BCP *) malloc (sizeof (BCP));
-    // 2 - Preenche os dados iniciais do processo
+    // 2 - Preenche os dados iniciais do processo passando também como parâmetro a prioridade gerada anteriormente
     cria_processo (processo, randomico);
-    // 3 - Insere o processo no final da fila1
+    // 3 - Se o processo tiver uma prioridade menor ou igual a 8 ele irá para fila1 (80%) se não irá para fila2 (20%).
     if (randomico <= 8){
       fila1 = anexa_fila (processo, fila1);
       // 4 - Incrementa a quantidade de vezes que o processo entrou na fila1, neste caso 1 vez.
       processo->num_fila1++;
     } else {
       fila2 = anexa_fila (processo, fila2);
-      // 4 - Incrementa a quantidade de vezes que o processo entrou na fila1, neste caso 1 vez.
+      // 4 - Incrementa a quantidade de vezes que o processo entrou na fila2, neste caso 1 vez.
       processo->num_fila2++;
     }
   }
