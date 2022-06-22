@@ -1,0 +1,14 @@
+Tempo Médio de Espera (TME) do escalonador_fcfs com 30 processos: 
+1- 0.000156s
+2- 0.000111s
+3- 0.000131s
+4- 0.000052s
+5- 0.000114s
+6- 0.000193s
+7- 0.000136s
+8- 0.000110s
+9- 0.000079s
+10- 0.000137s
+
+Valor Médio = 0.000122s
+Variância = 0.0000000014s
