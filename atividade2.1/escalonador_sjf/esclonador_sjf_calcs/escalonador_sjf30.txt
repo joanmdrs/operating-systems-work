@@ -1,0 +1,44 @@
+Tempo Médio de Espera total (TME) do escalonador_sjf com 30 processos: 
+1- 0.000143 s
+2- 0.000144 s
+3- 0.000119 s
+4- 0.000199 s
+5- 0.000144 s
+6- 0.000159 s
+7- 0.000162 s
+8- 0.000083 s
+9- 0.000276 s
+10- 0.000221 s
+
+Valor Médio = 
+Variância = 
+
+Tempo Médio de Espera CPU (TME) do escalonador_sjf com 30 processos: 
+1- 0.000135 s
+2- 0.000132 s
+3- 0.000108 s
+4- 0.000203 s
+5- 0.000135 s
+6- 0.000153 s
+7- 0.000146 s
+8- 0.000075 s
+9- 0.000269 s
+10- 0.000211 s
+
+Valor Médio = 
+Variância = 
+
+Tempo Médio de Espera I/O (TME) do escalonador_sjf com 30 processos: 
+1- 0.000151 s
+2- 0.000154 s
+3- 0.000131 s
+4- 0.000195 s
+5- 0.000156 s
+6- 0.000170 s
+7- 0.000173 s
+8- 0.000091 s
+9- 0.000284 s
+10- 0.000238 s
+
+Valor Médio = 
+Variância = 

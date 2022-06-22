@@ -207,8 +207,7 @@ BCP* exclui(double x, BCP* fila){
  		fila = p->prox;
  	}else {
  		ant->prox = p->prox;
- 	}
-	destroi_processo(p); // Libera o espaço de memória do elemento a ser excluído.
+ 	}// Libera o espaço de memória do elemento a ser excluído.
 	return fila;
 }
 
@@ -311,6 +310,7 @@ void escalona (BCP *fila_aux, BCP *bloqueados){
       if (processo->tempo_restante <= 0){       
         // Neste caso, finaliza o processo
         estatisticas(processo, SEMSUMARIO);
+	      destroi_processo(processo); 
       }
       // 2 - Ele parou para realizar uma E/S
       else{
