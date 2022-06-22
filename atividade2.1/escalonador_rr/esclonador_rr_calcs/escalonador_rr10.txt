@@ -1,0 +1,44 @@
+Tempo Médio de Espera total (TME) do escalonador_rr com 10 processos: 
+1- 0.000073 s
+2- 0.000100 s
+3- 0.000102 s
+4- 0.000125 s
+5- 0.000095 s
+6- 0.000101 s
+7- 0.000015 s
+8- 0.000089 s
+9- 0.000112 s
+10- 0.000118 s
+
+Valor Médio = 
+Variância = 
+
+Tempo Médio de Espera CPU (TME) do escalonador_rr com 10 processos: 
+1- 0.000083 s
+2- 0.000118 s
+3- 0.000099 s
+4- 0.000121 s
+5- 0.000106 s
+6- 0.000147 s
+7- 0.000014 s
+8- 0.000067 s
+9- 0.000118 s
+10- 0.000133 s
+
+Valor Médio = 
+Variância = 
+
+Tempo Médio de Espera I/O (TME) do escalonador_rr com 10 processos: 
+1- 0.000064 s
+2- 0.000072 s
+3- 0.000106 s
+4- 0.000142 s
+5- 0.000069 s
+6- 0.000070 s
+7- 0.000016 s
+8- 0.000110 s
+9- 0.000108 s
+10- 0.000109 s
+
+Valor Médio = 
+Variância = 
