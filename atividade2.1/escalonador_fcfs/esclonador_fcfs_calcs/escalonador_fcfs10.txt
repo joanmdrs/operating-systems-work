@@ -1,14 +1,44 @@
-Tempo Médio de Espera (TME) do escalonador_fcfs com 10 processos: 
-1- 0.000019s
-2- 0.000034s
-3- 0.000076s
-4- 0.000089s
-5- 0.000018s
-6- 0.000049s
-7- 0.000039s
-8- 0.000030s
-9- 0.000072s
-10- 0.000054s
+Tempo Médio de Espera total (TME) do escalonador_fcfs com 10 processos: 
+1- 0.000172 s
+2- 0.000235 s
+3- 0.000103 s
+4- 0.000209 s
+5- 0.000199 s
+6- 0.000136 s
+7- 0.000142 s
+8- 0.000124 s
+9- 0.000189 s
+10- 0.000142 s 
 
-Valor Médio = 0.000048s
-Variância = 0.0000000005s
+Valor Médio = 
+Variância = 
+
+Tempo Médio de Espera CPU (TME) do escalonador_fcfs com 10 processos: 
+1- 0.000137 s
+2- 0.000211 s
+3- 0.000083 s
+4- 0.000217 s
+5- 0.000148 s
+6- 0.000124 s
+7- 0.000155 s
+8- 0.000106 s
+9- 0.000166 s
+10- 0.000159 s
+
+Valor Médio = 
+Variância = 
+
+Tempo Médio de Espera I/O (TME) do escalonador_fcfs com 10 processos: 
+1- 0.000207 s
+2- 0.000446 s
+3- 0.000151 s
+4- 0.000197 s
+5- 0.000233 s
+6- 0.000148 s
+7- 0.000124 s
+8- 0.000151 s
+9- 0.000225 s
+10- 0.000125 s
+
+Valor Médio = 
+Variância = 

@@ -1,0 +1,44 @@
+Tempo Médio de Espera total (TME) do escalonador com 30 processos: 
+1- 0.000663 s
+2- 0.000848 s
+3- 0.000702 s
+4- 0.000607 s
+5- 0.000760 s
+6- 0.000743 s
+7- 0.000668 s
+8- 0.000650 s
+9- 0.000836 s
+10- 0.000857 s
+
+Valor Médio = 
+Variância = 
+
+Tempo Médio de Espera CPU (TME) do escalonador com 30 processos: 
+1- 0.000908 s
+2- 0.000900 s
+3- 0.000938 s
+4- 0.000687 s
+5- 0.001008 s
+6- 0.000818 s
+7- 0.000790 s
+8- 0.000814 s
+9- 0.001032 s
+10- 0.000907 s
+
+Valor Médio = 
+Variância = 
+
+Tempo Médio de Espera I/O (TME) do escalonador com 30 processos: 
+1- 0.000540 s
+2- 0.000814 s
+3- 0.000521 s
+4- 0.000537 s
+5- 0.000570 s
+6- 0.000678 s
+7- 0.000529 s
+8- 0.000524 s
+9- 0.000665 s
+10- 0.000782 s
+
+Valor Médio = 
+Variância = 

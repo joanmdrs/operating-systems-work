@@ -1,14 +1,44 @@
-Tempo Médio de Espera (TME) do escalonador_prio com 10 processos: 
-1- 0.000113s
-2- 0.000087s
-3- 0.000349s
-4- 0.000266s
-5- 0.000170s
-6- 0.000109s
-7- 0.000216s
-8- 0.000155s
-9- 0.000106s
-10- 0.000388s
+Tempo Médio de Espera total (TME) do escalonador_prio com 10 processos: 
+1- 0.000253 s
+2- 0.000435 s
+3- 0.000497 s
+4- 0.000218 s
+5- 0.000394 s
+6- 0.000323 s
+7- 0.000258 s
+8- 0.000306 s
+9- 0.000214 s
+10- 0.000202 s
 
-Valor Médio = 0.000196s
-Variância = 0.0000000114s
+Valor Médio = 
+Variância = 
+
+Tempo Médio de Espera CPU (TME) do escalonador_prio com 10 processos: 
+1- 0.000237 s
+2- 0.000381 s
+3- 0.000505 s
+4- 0.000315 s
+5- 0.000433 s
+6- 0.000273 s
+7- 0.000267 s
+8- 0.000326 s
+9- 0.000227 s
+10- 0.000157 s
+
+Valor Médio = 
+Variância = 
+
+Tempo Médio de Espera I/O (TME) do escalonador_prio com 10 processos: 
+1- 0.000277 s
+2- 0.000561 s
+3- 0.000488 s
+4- 0.000194 s
+5- 0.000335 s
+6- 0.000397 s
+7- 0.000253 s
+8- 0.000261 s
+9- 0.000208 s
+10- 0.000232 s
+
+Valor Médio = 
+Variância = 

@@ -1,14 +1,44 @@
-Tempo Médio de Espera (TME) do escalonador_prio com 40 processos: 
-1- 0.000388s
-2- 0.000459s
-3- 0.000499s
-4- 0.000403s
-5- 0.000343s
-6- 0.000328s
-7- 0.000331s
-8- 0.000404s
-9- 0.000485s
-10- 0.000320s
+Tempo Médio de Espera total (TME) do escalonador_prio com 40 processos: 
+1- 0.001084 s
+2- 0.001751 s
+3- 0.001090 s
+4- 0.001001 s
+5- 0.000883 s
+6- 0.001429 s
+7- 0.001117 s
+8- 0.000912 s
+9- 0.001203 s
+10- 0.001785 s
 
-Valor Médio = 0.000396s
-Variância = 0.0000000045s
+Valor Médio = 
+Variância = 
+
+Tempo Médio de Espera CPU (TME) do escalonador_prio com 40 processos: 
+1- 0.001059 s
+2- 0.001751 s
+3- 0.001223 s
+4- 0.000985 s
+5- 0.000819 s
+6- 0.001460 s
+7- 0.001246 s
+8- 0.001011 s
+9- 0.001241 s
+10- 0.001960 s
+
+Valor Médio = 
+Variância = 
+
+Tempo Médio de Espera I/O (TME) do escalonador_prio com 40 processos: 
+1- 0.001114 s
+2- 0.001750 s
+3- 0.000957 s
+4- 0.001019 s
+5- 0.000910 s
+6- 0.001392 s
+7- 0.001040 s
+8- 0.000838 s
+9- 0.001157 s
+10- 0.001590 s
+
+Valor Médio = 
+Variância = 

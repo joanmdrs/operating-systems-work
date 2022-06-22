@@ -1,14 +1,44 @@
-Tempo Médio de Espera (TME) do escalonador_fcfs com 50 processos: 
-1- 0.000197s
-2- 0.000147s
-3- 0.000175s
-4- 0.000164s
-5- 0.000244s
-6- 0.000180s
-7- 0.000127s
-8- 0.000156s
-9- 0.000082s
-10- 0.000320s
+Tempo Médio de Espera total (TME) do escalonador_fcfs com 50 processos: 
+1- 0.000786 s
+2- 0.000455 s
+3- 0.000762 s
+4- 0.000657 s
+5- 0.000576 s
+6- 0.000682 s
+7- 0.000562 s
+8- 0.000692 s
+9- 0.000490 s
+10- 0.000507 s
 
-Valor Médio = 0.000179s
-Variância = 0.0000000038s
+Valor Médio = 
+Variância = 
+
+Tempo Médio de Espera CPU (TME) do escalonador_fcfs com 50 processos: 
+1- 0.000784 s
+2- 0.000449 s
+3- 0.000724 s
+4- 0.000643 s
+5- 0.000557 s
+6- 0.000633 s
+7- 0.000542 s
+8- 0.000695 s
+9- 0.000498 s
+10- 0.000496 s
+
+Valor Médio = 
+Variância = 
+
+Tempo Médio de Espera I/O (TME) do escalonador_fcfs com 50 processos: 
+1- 0.000787 s
+2- 0.000460 s
+3- 0.000792 s
+4- 0.000668 s
+5- 0.000593 s
+6- 0.000717 s
+7- 0.000585 s
+8- 0.000689 s
+9- 0.000481 s
+10- 0.000529 s
+
+Valor Médio = 
+Variância = 
