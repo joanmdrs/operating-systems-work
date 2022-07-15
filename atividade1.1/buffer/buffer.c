@@ -68,8 +68,8 @@ int main(int argc, char ** argv)
     // valores, usando a biblioteca dijkstra.h
     // 
     mutex = sem_create(123, 1);
-    full = sem_create(456, N_BUFFER);
-    empty = sem_create(789, 0);
+    full = sem_create(456, 0);
+    empty = sem_create(789, N_BUFFER);
     
     // gerando um buffer de N inteiros
     buffer = malloc(N_BUFFER * sizeof(int));
