@@ -177,24 +177,31 @@ int requisicao(int i, int * req){
     int isSafe;
 
     for (j = 0; j < m; j++){
+        printf("\nrequisição(%d): %d -- necessidade(%d): %d\n", j, requisicao[j], j, ne[i][j]);
         if(requisicao[j] <= ne[i][j]){
-            if(requisicao[i] <= disp[j]){
+            printf("\nPrimeeiro IF\n");
+            if(requisicao[j] <= disp[j]){
+                printf("\nSegundo IF\n");
+                printf("\nDisponível(%d): %d\n", j, disp[j]);
                 disp[j] = disp[j] - requisicao[j];
                 aloc[i][j] = aloc[i][j] + requisicao[j];
+                printf("\nnecessidade(%d) antes: %d\n", j, ne[i][j]);
                 ne[i][j] = ne[i][j] - requisicao[j];
+                printf("\nnecessidade(%d) depois: %d\n", j, ne[i][j]);
                 isSafe = seguranca();
-
-                if(isSafe == 1) {
-                    return 1;
-                } else {
-                    ne[i][j] = ne[i][j] + requisicao[j];
-                    aloc[i][j] = aloc[i][j] - requisicao[j];
-                    disp[j] = disp[j] + requisicao[j];
-                }
             }
         }
     }
-    
+
+    for (j = 0; j < m; j++){
+        if(isSafe == 1) {
+            return 1;
+        } else {
+            ne[i][j] = ne[i][j] + requisicao[j];
+            aloc[i][j] = aloc[i][j] - requisicao[j];
+            disp[j] = disp[j] + requisicao[j];
+        }
+    }
 
     // verifica se req <= ne
 
