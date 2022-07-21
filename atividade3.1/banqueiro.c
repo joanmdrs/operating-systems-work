@@ -12,7 +12,7 @@
 #define MUTEX 1
 
 // maximo limite individual de recursos
-#define MAXLIMIT 15
+#define MAXLIMIT 100
 
 // semaforo
 int mutex;
@@ -72,8 +72,10 @@ int gera_rand(int lim, int zero);
 // imprime o estado do banco
 void print_banco();
 
-int main(int argc, char ** argv){
-    if ( argc != 3 ){
+int main(int argc, char ** argv)
+{
+    if ( argc != 3 )
+    {
         printf("Uso: %s num_clientes num_recursos\n", argv[0]);
         return 1;
     }
@@ -112,35 +114,41 @@ int main(int argc, char ** argv){
     return 0;
 }
 
-void inicia_recursos(){
+void inicia_recursos()
+{
     int i;
 
     // gerando um vetor de recursos disponiveis
-    disp = (int *) malloc(m * sizeof(int));
+    disp = (int *)malloc(m * sizeof(int));
 
-    for (i = 0; i < m; i++){
+    for (i = 0; i < m; i++)
+    {
         disp[i] = gera_rand(MAXLIMIT, 1);
     }
 }
 
-void inicia_clientes(){
+void inicia_clientes()
+{
     int i, j;
 
     // criando as matrizes do banqueiro
-    max = (int **) malloc(n * sizeof(int *));
+
+    max  = (int **) malloc(n * sizeof(int *));
     aloc = (int **) malloc(n * sizeof(int *));
-    ne = (int **) malloc(n * sizeof(int *));
+    ne   = (int **) malloc(n * sizeof(int *));
     
     // gerando uma lista de threads de clientes
     ncli = malloc(n * sizeof(pthread_t));
 
     // iniciando os valores maximos de cada cliente
-    for (i = 0; i < n; i++){
+    for (i = 0; i < n; i++)
+    {
         max[i]  = (int *) malloc(m * sizeof(int));
         aloc[i] = (int *) malloc(m * sizeof(int));
         ne[i]   = (int *) malloc(m * sizeof(int));
 
-        for (j = 0; j < m; j++){
+        for (j = 0; j < m; j++)
+        {
             max[i][j]  = gera_rand(disp[j], 1);
             aloc[i][j] = 0;
             ne[i][j]   = max[i][j];
@@ -151,76 +159,77 @@ void inicia_clientes(){
     }
     
     // esperando as threads
-    for (i = 0; i < n; i++){
+    for (i = 0; i < n; i++)
+    {
         pthread_join(ncli[i], NULL);
     }
     
 }
 
-int * gera_requisicao(int cliente){
+int * gera_requisicao(int cliente)
+{
     static int * req;
     req = malloc(m * sizeof(int));
 
     int i;
-    for (i = 0; i < m; i++){
+    for (i = 0; i < m; i++)
+    {
         req[i] = gera_rand(ne[cliente][i], 0);
     }
 
     return req;
 }
 
-int requisicao(int i, int * req){
-    int j;
+int requisicao(int i, int * req)
+{
 
-    int * requisicao = req;
+    static int * requisicao;
+    requisicao = req;
+    int safeState;
+    int j, k;
 
-    int isSafe;
+    int * dispB = (int *)malloc(m * sizeof(int));
+    int ** alocB = (int **) malloc(n * sizeof(int *));
+    int ** neB   = (int **) malloc(n * sizeof(int *));
 
-    for (j = 0; j < m; j++){
-        printf("\nrequisição(%d): %d -- necessidade(%d): %d\n", j, requisicao[j], j, ne[i][j]);
-        if(requisicao[j] <= ne[i][j]){
-            printf("\nPrimeeiro IF\n");
-            if(requisicao[j] <= disp[j]){
-                printf("\nSegundo IF\n");
-                printf("\nDisponível(%d): %d\n", j, disp[j]);
-                disp[j] = disp[j] - requisicao[j];
-                aloc[i][j] = aloc[i][j] + requisicao[j];
-                printf("\nnecessidade(%d) antes: %d\n", j, ne[i][j]);
-                ne[i][j] = ne[i][j] - requisicao[j];
-                printf("\nnecessidade(%d) depois: %d\n", j, ne[i][j]);
-                isSafe = seguranca();
-            }
+    dispB = disp;
+    alocB = aloc;
+    neB = ne;
+
+
+
+    for(j = 0; j < m; j++){
+        if(requisicao[j] <= ne[i][j] && requisicao[j] <= disp[j]){
+            disp[j] = disp[j] - requisicao[j];
+            aloc[i][j] = aloc[i][j] + requisicao[j];
+            ne[i][j] = ne[i][j] - requisicao[j];
+        }else {
+            disp = dispB;
+            aloc = alocB;
+            ne = neB;
+            return 0;
         }
-    }
-
-    for (j = 0; j < m; j++){
-        if(isSafe == 1) {
-            return 1;
-        } else {
-            ne[i][j] = ne[i][j] + requisicao[j];
-            aloc[i][j] = aloc[i][j] - requisicao[j];
-            disp[j] = disp[j] + requisicao[j];
-        }
-    }
-
-    // verifica se req <= ne
-
-    // verifica se req <= disp
-
-    // simula a requisicao
-
-    // testa se o banco esta em estado seguro
-    
-        // retorna verdadeiro se a requisicao eh valida
-
-    // desfaz simulacao (roll back) em caso de requisicao invalida
-
-        // requisicao negada
         
-    return 0;
+    }
+
+    safeState = seguranca();
+
+    if(safeState == 1){
+        return 1;
+    }else {
+        for(j = 0; j < m; j++){
+            disp[j] = disp[j] + requisicao[j];
+            aloc[i][j] = aloc[i][j] - requisicao[j];
+            ne[i][j] = ne[i][j] + requisicao[j];
+        }
+        return 0;
+    }
+
+
 }
 
-int seguranca(){
+int seguranca()
+{
     int i, j;
 
     int ne_menor;
@@ -228,54 +237,49 @@ int seguranca(){
     int * trab = malloc(m * sizeof(int));
     int * fim = malloc(n * sizeof(int));
 
-    // copia disp para trab
-    trab = disp;
-
-    // iniciando todos de fim como falso
-
-    for(i = 0; i < n; i++){
-        fim[i] = 0;
+   
+    for(j =  0; j < m; j++){
+        trab[j] = disp[j];
     }
 
-    // buscando algum cliente que possa acabar
+    for(i = 0; i < n; i++){
+        fim[i] = 0; 
+    }
+
     for(i = 0; i < n; i++){
         for(j = 0; j < m; j++){
-            // se o fim eh falso
-
-            // se ne <= trab
-            if(fim[i] == 0){
-                // se ne <= trab, acrescenta seu aloc em trab
-                if(ne[i][j] <= trab[j]){
-                    // define que esse cliente pode terminar
-                    trab[j] = trab[j] + aloc[i][j];
-                    fim[i] = 1;
-                }
+            if(fim[i] == 0 && ne[i][j] <= trab[j]){
+                trab[j] = trab[j] = aloc[i][j];
+                fim[i] = 1;
             }
         }
-        
     }
-    
-    // verifica se todos os clientes terminaram
+
     for(i = 0; i < n; i++){
-        // se algum cliente nao terminou
         if(fim[i] == 0){
-            // retorna estado inseguro
             return 0;
         }
     }
-    // se todos terminam, retorna estado seguro
+
     return 1;
 
 
+
+
+
+   
 }
 
-int finaliza_cliente(int i){
+int finaliza_cliente(int i)
+{
     int j;
 
     // verifica se cliente nao tem mais necessidades
-    for (j = 0; j < m; j++){
+    for (j = 0; j < m; j++)
+    {
         // cliente ainda nao terminou
-        if ( ne[i][j] != 0 ){
+        if ( ne[i][j] != 0 )
+        {
             return 0;
         }
     }
@@ -283,7 +287,8 @@ int finaliza_cliente(int i){
     // cliente terminou
 
     // limpa seus recursos
-    for (j = 0; j < m; j++){
+    for (j = 0; j < m; j++)
+    {
         // devolve para os disponiveis
         disp[j] += aloc[i][j];
         aloc[i][j] = 0;
@@ -292,12 +297,15 @@ int finaliza_cliente(int i){
     return 1;
 }
 
-void cliente(int i){
+void cliente(int i)
+{
+    printf("\nVariável i: %d\n", i);
     int executa = 1, j;
 
     int * req;
     
-    while(executa){
+    while(executa)
+    {
         // garante acesso exclusivo ao buffer
         P(mutex);
     
@@ -307,18 +315,21 @@ void cliente(int i){
 
         req = gera_requisicao(i);
 
-        for (j = 0; j < m; j++){
+        for (j = 0; j < m; j++)
+        {
             printf(" %2d ",req[j]);
         }
 
         printf("\n");
 
         // enviando a requisição ao banco
-        if ( requisicao(i, req) == 1 ){
+        if ( requisicao(i, req) == 1 )
+        {
             printf(": Cliente %d executou sua requisicao\n",i);
 
             // verifica se o cliente terminou
-            if ( finaliza_cliente(i) == 1 ){
+            if ( finaliza_cliente(i) == 1 )
+            {
             
                 printf(": Cliente %d finalizou\n",i);
 
@@ -326,7 +337,8 @@ void cliente(int i){
                 executa = 0;
             }
         }
-        else{
+        else
+        {
             printf(": Cliente %d teve sua requisicao negada\n",i);
         }
 
@@ -337,8 +349,10 @@ void cliente(int i){
     }
 }
 
-int gera_rand(int limit, int zero){
-    if (zero == 1){
+int gera_rand(int limit, int zero)
+{
+    if (zero == 1)
+    {
         // 1 a limit
         return (rand() % limit) + 1;
     }
@@ -348,29 +362,34 @@ int gera_rand(int limit, int zero){
     
 }
 
-void print_banco(){
+void print_banco()
+{
     int i, j;
 
     printf("\t== BANCO ==\n");
 
     printf("Recursos disponiveis\n");
     printf("\t    i: ");
-    for (j = 0; j < m; j++){
+    for (j = 0; j < m; j++)
+    {
         printf(" %2d ",j);
     }
     
     printf("\n\t       ");
-    for (j = 0; j < m; j++){
+    for (j = 0; j < m; j++)
+    {
         printf(" %2d ",disp[j]);
     }
 
     printf("\n");
 
     printf("MAX dos clientes\n");
-    for (i = 0; i < n; i++){
+    for (i = 0; i < n; i++)
+    {
         printf("\ti: %d [ ",i);
 
-        for (j = 0; j < m; j++){
+        for (j = 0; j < m; j++)
+        {
             printf(" %2d ",max[i][j]);
         }
     
@@ -378,10 +397,12 @@ void print_banco(){
     }
     
     printf("Aloc dos clientes\n");
-    for (i = 0; i < n; i++){
+    for (i = 0; i < n; i++)
+    {
         printf("\ti: %d [ ",i);
 
-        for (j = 0; j < m; j++){
+        for (j = 0; j < m; j++)
+        {
             printf(" %2d ",aloc[i][j]);
         }
     
@@ -389,10 +410,12 @@ void print_banco(){
     }
     
     printf("Ne dos clientes\n");
-    for (i = 0; i < n; i++){
+    for (i = 0; i < n; i++)
+    {
         printf("\ti: %d [ ",i);
 
-        for (j = 0; j < m; j++){
+        for (j = 0; j < m; j++)
+        {
             printf(" %2d ",ne[i][j]);
         }
     
