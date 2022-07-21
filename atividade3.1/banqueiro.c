@@ -12,7 +12,7 @@
 #define MUTEX 1
 
 // maximo limite individual de recursos
-#define MAXLIMIT 100
+#define MAXLIMIT 15
 
 // semaforo
 int mutex;
@@ -192,10 +192,15 @@ int requisicao(int i, int * req)
     int ** alocB = (int **) malloc(n * sizeof(int *));
     int ** neB   = (int **) malloc(n * sizeof(int *));
 
+    for (k = 0; k < n; k++)
+    {
+        alocB[k] = (int *) malloc(m * sizeof(int));
+        neB[k]   = (int *) malloc(m * sizeof(int));
+    }
+
     dispB = disp;
     alocB = aloc;
     neB = ne;
-
 
 
     for(j = 0; j < m; j++){
